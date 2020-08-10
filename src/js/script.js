@@ -2,40 +2,40 @@
 Treehouse Techdegree:
 FSJS project 2 - List Filter and Pagination
 ******************************************/
-   
-// Study guide for this project - https://drive.google.com/file/d/1OD1diUsTMdpfMDv677TfL1xO2CEkykSz/view?usp=sharing
+
+const studentListItems = document.querySelectorAll("ul.student-list li.student-item");
+const numOfItemsPerPage = 10;
+
+
+/**
+ * Hide all student list items
+ */
+function hideAllStudentListItems() {
+   for (let i = 0; i < studentListItems.length; i++) {
+      studentListItems[i].classList.add("hidden");
+   }
+}
 
 
 /*** 
-   Add your global variables that store the DOM elements you will 
-   need to reference and/or manipulate. 
-   
-   But be mindful of which variables should be global and which 
-   should be locally scoped to one of the two main functions you're 
-   going to create. A good general rule of thumb is if the variable 
-   will only be used inside of a function, then it can be locally 
-   scoped to that function.
+   Hide all of the items in the list except for the ten that are relevant to the
+   pageNum param.
+
+   @param {li[]} studentList - array of student list items 
+   @param {int} pageNum - number of page that should be displayed
 ***/
+function displayPage(studentList, pageNum) {
+   let startIndex = (pageNum * numOfItemsPerPage) - numOfItemsPerPage;
+   let endIndex = pageNum * numOfItemsPerPage;
 
+   if (endIndex > studentList.length) {
+      endIndex = studentList.length;
+   }
 
-
-
-/*** 
-   Create the `showPage` function to hide all of the items in the 
-   list except for the ten you want to show.
-
-   Pro Tips: 
-     - Keep in mind that with a list of 54 students, the last page 
-       will only display four.
-     - Remember that the first student has an index of 0.
-     - Remember that a function `parameter` goes in the parens when 
-       you initially define the function, and it acts as a variable 
-       or a placeholder to represent the actual function `argument` 
-       that will be passed into the parens later when you call or 
-       "invoke" the function 
-***/
-
-
+   for (let i = startIndex; i < endIndex; ++i) {
+      studentList[i].classList.remove("hidden");
+   }
+}
 
 
 /*** 
@@ -47,4 +47,7 @@ FSJS project 2 - List Filter and Pagination
 
 
 
-// Remember to delete the comments that came with this file, and replace them with your own code comments.
+document.addEventListener("DOMContentLoaded", () => {
+   hideAllStudentListItems();
+   displayPage(studentListItems, 2);
+});
