@@ -17,25 +17,25 @@ function hideAllStudentListItems() {
 }
 
 
-/*** 
-   Hide all of the items in the list except for the ones that should be displayed
-   on the page
-
-   @param {li[]} studentList - array of student list items 
-   @param {int} pageNum - number of the page that will be displayed
-***/
-function displayPage(studentList, pageNum=1) {
+/**
+ * Hide all of the items in the list except for the ones that should be displayed
+ * on the page
+ * 
+ * @param {li[] HTML elements} listItems - student list items
+ * @param {int} pageNum - number of the page that will be displayed
+ */
+function displayPage(listItems, pageNum=1) {
    hideAllStudentListItems();
 
    let startIndex = (pageNum * numOfItemsPerPage) - numOfItemsPerPage;
    let endIndex = pageNum * numOfItemsPerPage;
 
-   if (endIndex > studentList.length) {
-      endIndex = studentList.length;
+   if (endIndex > listItems.length) {
+      endIndex = listItems.length;
    }
 
    for (let i = startIndex; i < endIndex; ++i) {
-      studentList[i].classList.remove("hidden");
+      listItems[i].classList.remove("hidden");
    }
 }
 
@@ -44,7 +44,7 @@ function displayPage(studentList, pageNum=1) {
  * Generate pagination buttons
  * 
  * @param {int} num - number of pagination buttons to be generated
- * @return {div html element} div
+ * @return {div HTML element} div
  */
 function generatePginationButtons(num) {
    const div = document.createElement('div');
@@ -70,10 +70,11 @@ function generatePginationButtons(num) {
    return div;
 }
 
+
 /**
  * Add event listeners to pagination links
  * 
- * @param {div html element} pagination - pagination div element containing links
+ * @param {div HTML element} pagination - pagination div element containing links
  */
 function addFunctionalityToPaginationLinks(pagination) {
    pagination.addEventListener('click', (e) => {
@@ -92,12 +93,14 @@ function addFunctionalityToPaginationLinks(pagination) {
 }
 
 
-/*** 
-   Generate, append, and add functionality to the pagination buttons.
-***/
-function appendPageLinks() {
+/**
+ * Generate, append, and add functionality to the pagination buttons.
+ * 
+ * @param {li[] HTML elements} listItems - student list items
+ */
+function appendPageLinks(listItems) {
    const numOfPaginationButtons = 
-      Math.floor(studentListItems.length / numOfItemsPerPage) + 1;
+      Math.floor(listItems.length / numOfItemsPerPage) + 1;
    const pagination = generatePginationButtons(numOfPaginationButtons);
       
    const page = document.querySelector('div.page');
@@ -113,5 +116,5 @@ function appendPageLinks() {
 document.addEventListener("DOMContentLoaded", () => {
    hideAllStudentListItems();
    displayPage(studentListItems);
-   appendPageLinks();
+   appendPageLinks(studentListItems);
 });
