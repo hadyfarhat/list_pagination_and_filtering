@@ -169,15 +169,24 @@ function search(str, listItems) {
  */
 function addFunctionalityToSearchBar(searchBar, listItems) {
    const button = searchBar.querySelector('button');
-   button.addEventListener('click', (e) => {
-      e.preventDefault();
-      
-      const input = searchBar.querySelector('input').value;
-      const foundListItems = search(input, listItems);
+   const input = searchBar.querySelector('input');
 
+   function searchFuncionality(query) {
+      const foundListItems = search(query, listItems);
       appendPageLinks(foundListItems);
       displayPage(foundListItems);
+   }
+   
+   button.addEventListener('click', () => {
+      const query = searchBar.querySelector('input').value;
+      searchFuncionality(query);
    });
+
+   input.addEventListener('input', (e) => {
+      const query = e.target.value;
+      searchFuncionality(query);
+   });
+
 }
 
 
