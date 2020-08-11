@@ -20,6 +20,16 @@ function hideListItems(listItems) {
 
 
 /**
+ * Remove all pagination buttons
+ */
+function removePagination() {
+   const page = document.querySelector('div.page');
+   const existingPagination = document.querySelector('.pagination');
+   if (existingPagination) page.removeChild(existingPagination);
+}
+
+
+/**
  * Hide all of the items in the list except for the ones that should be displayed
  * on the page
  * 
@@ -106,11 +116,9 @@ function appendPageLinks(listItems) {
       Math.floor(listItems.length / numOfItemsPerPage) + 1;
    const pagination = generatePginationButtons(numOfPaginationButtons);
    
+   // remove existing pagination and add the new one
+   removePagination();
    const page = document.querySelector('div.page');
-   // remove any existing pagination
-   const existingPagination = document.querySelector('.pagination');
-   if (existingPagination) page.removeChild(existingPagination);
-   // append new pagination
    page.appendChild(pagination);
 
    addFunctionalityToPaginationLinks(pagination, listItems);
@@ -162,7 +170,48 @@ function search(str, listItems) {
 
 
 /**
- * Add functionality to search bar
+ * Generate no search results element
+ */
+function generateNoSearchResultElement() {
+   let div = document.createElement('div');
+   div.className = 'no-search-results';
+   let h2 = document.createElement('h2');
+   h2.textContent = 'No search results were found';
+   div.appendChild(h2);
+
+   return div;
+}
+
+
+/**
+ * Remove no search results element
+ */
+function removeNoSearchResultsMessage() {
+   const noSearchResultsDiv = document.querySelector('.no-search-results');
+   if (noSearchResultsDiv) {
+      const page = document.querySelector('.page');
+      page.removeChild(noSearchResultsDiv);
+   }
+}
+
+
+/**
+ * Display no search results message
+ * @param {li[] HTML elements} listItems - listItems that will be hidden
+ */
+function displayNoSearchResults(listItems) {
+   removeNoSearchResultsMessage();
+   hideListItems(listItems);
+   removePagination();
+
+   const noSearchResultsDiv = generateNoSearchResultElement();
+   const page = document.querySelector('.page');
+   page.appendChild(noSearchResultsDiv);
+}
+
+
+/**
+ * Add event listeners to input change and button click of the search bar
  * 
  * @param {div HTML element} searchBar - search bar div
  * @param {li[] HTML elements} listItems - listItems that will be searched
@@ -172,9 +221,15 @@ function addFunctionalityToSearchBar(searchBar, listItems) {
    const input = searchBar.querySelector('input');
 
    function searchFuncionality(query) {
+      removeNoSearchResultsMessage();
+      
       const foundListItems = search(query, listItems);
-      appendPageLinks(foundListItems);
-      displayPage(foundListItems);
+      if (foundListItems.length > 0) {
+         appendPageLinks(foundListItems);
+         displayPage(foundListItems);
+      } else {
+         displayNoSearchResults(listItems);
+      }
    }
    
    button.addEventListener('click', () => {
@@ -186,7 +241,6 @@ function addFunctionalityToSearchBar(searchBar, listItems) {
       const query = e.target.value;
       searchFuncionality(query);
    });
-
 }
 
 
