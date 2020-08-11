@@ -8,11 +8,13 @@ const numOfItemsPerPage = 10;
 
 
 /**
- * Hide all student list items
+ * Hide given list items
+ * 
+ * @param {li[] HTML elements} listItems - list items that will be hidden
  */
-function hideAllStudentListItems() {
-   for (let i = 0; i < studentListItems.length; i++) {
-      studentListItems[i].classList.add("hidden");
+function hideListItems(listItems) {
+   for (let i = 0; i < listItems.length; i++) {
+      listItems[i].classList.add("hidden");
    }
 }
 
@@ -25,7 +27,7 @@ function hideAllStudentListItems() {
  * @param {int} pageNum - number of the page that will be displayed
  */
 function displayPage(listItems, pageNum=1) {
-   hideAllStudentListItems();
+   hideListItems(studentListItems);
 
    let startIndex = (pageNum * numOfItemsPerPage) - numOfItemsPerPage;
    let endIndex = pageNum * numOfItemsPerPage;
@@ -75,8 +77,9 @@ function generatePginationButtons(num) {
  * Add event listeners to pagination links
  * 
  * @param {div HTML element} pagination - pagination div element containing links
+ * @param {li[] HTML elements} listItems - student list items
  */
-function addFunctionalityToPaginationLinks(pagination) {
+function addFunctionalityToPaginationLinks(pagination, listItems) {
    pagination.addEventListener('click', (e) => {
       if (e.target.tagName == 'A') {
          e.preventDefault();
@@ -87,7 +90,7 @@ function addFunctionalityToPaginationLinks(pagination) {
          
          // display page
          let pageNum = e.target.textContent;
-         displayPage(studentListItems, pageNum);
+         displayPage(listItems, pageNum);
       }
    });
 }
@@ -102,11 +105,15 @@ function appendPageLinks(listItems) {
    const numOfPaginationButtons = 
       Math.floor(listItems.length / numOfItemsPerPage) + 1;
    const pagination = generatePginationButtons(numOfPaginationButtons);
-      
+   
    const page = document.querySelector('div.page');
+   // remove any existing pagination
+   const existingPagination = document.querySelector('.pagination');
+   if (existingPagination) page.removeChild(existingPagination);
+   // append new pagination
    page.appendChild(pagination);
 
-   addFunctionalityToPaginationLinks(pagination);
+   addFunctionalityToPaginationLinks(pagination, listItems);
 }
 
 
@@ -132,26 +139,57 @@ function generateSearchBar() {
 
 
 /**
+ * Search for list items that contain the search string in their names
+ * 
+ * @param {string} str - search query string
+ * @param {li[] HTML elements} listItems - listItems that will be searched
+ * @return {li[] HTML elements} foundListItems
+ */
+function search(str, listItems) {
+   str = str.toLowerCase().trim();
+   
+   let foundListItems = [];
+   for (let i = 0; i < listItems.length; ++i) {
+      let item = listItems[i];
+      let studentName = item.querySelector('h3');
+      if (studentName.textContent.includes(str)) {
+         foundListItems.push(item);
+      }
+   }
+
+   return foundListItems;
+}
+
+
+/**
  * Add functionality to search bar
  * 
- * @param {div HTML element} searchBar - div containing search bar
+ * @param {div HTML element} searchBar - search bar div
+ * @param {li[] HTML elements} listItems - listItems that will be searched
  */
-function addFunctionalityToSearchBar(searchBar) {
+function addFunctionalityToSearchBar(searchBar, listItems) {
    const button = searchBar.querySelector('button');
    button.addEventListener('click', (e) => {
       e.preventDefault();
-      console.log('button clicked');
+      
+      const input = searchBar.querySelector('input').value;
+      const foundListItems = search(input, listItems);
+
+      appendPageLinks(foundListItems);
+      displayPage(foundListItems);
    });
 }
 
 
 /**
  * Generate, append, and add functionality to the search bar
+ * 
+ * @param {li[] HTML elements} listItems - listItems that will be searched
  */
-function appendSearchBar() {
+function appendSearchBar(listItems) {
    const searchBar = generateSearchBar();
    
-   addFunctionalityToSearchBar(searchBar);
+   addFunctionalityToSearchBar(searchBar, listItems);
 
    const pageHeader = document.querySelector('div.page-header');
    pageHeader.appendChild(searchBar);
@@ -159,8 +197,8 @@ function appendSearchBar() {
 
 
 document.addEventListener("DOMContentLoaded", () => {
-   hideAllStudentListItems();
+   hideListItems(studentListItems);
    displayPage(studentListItems);
    appendPageLinks(studentListItems);
-   appendSearchBar();
+   appendSearchBar(studentListItems);
 });
