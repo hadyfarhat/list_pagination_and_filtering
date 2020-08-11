@@ -24,14 +24,14 @@ function hideListItems(listItems) {
  */
 function removePagination() {
    const page = document.querySelector('div.page');
-   const existingPagination = document.querySelector('.pagination');
+   const existingPagination = page.querySelector('.pagination');
    if (existingPagination) page.removeChild(existingPagination);
 }
 
 
 /**
- * Hide all of the items in the list except for the ones that should be displayed
- * on the page
+ * Hide all of the items in the given list except for the ones that 
+ * should be displayed on the page
  * 
  * @param {li[] HTML elements} listItems - student list items
  * @param {int} pageNum - number of the page that will be displayed
@@ -63,7 +63,7 @@ function generatePginationButtons(num) {
    div.classList.add('pagination');
    const ul = document.createElement('ul');
 
-   // create links and append them to the list
+   // create links and append them to the pagination list
    for (let i = 0; i < num; ++i) {
       let li = document.createElement('li');
       let a = document.createElement('a');
@@ -222,7 +222,7 @@ function addFunctionalityToSearchBar(searchBar, listItems) {
 
    function searchFuncionality(query) {
       removeNoSearchResultsMessage();
-      
+
       const foundListItems = search(query, listItems);
       if (foundListItems.length > 0) {
          appendPageLinks(foundListItems);
