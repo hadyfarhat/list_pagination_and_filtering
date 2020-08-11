@@ -111,10 +111,56 @@ function appendPageLinks(listItems) {
 
 
 /**
- * Main
+ * Generate search bar
+ * 
+ * @return {div HTML element} div
  */
+function generateSearchBar() {
+   const div = document.createElement('div');
+   div.classList.add('student-search');
+
+   const input = document.createElement('input');
+   input.placeholder = "Search for students...";
+   div.appendChild(input);
+
+   const button = document.createElement('button');
+   button.textContent = 'Search';
+   div.appendChild(button);
+
+   return div;
+}
+
+
+/**
+ * Add functionality to search bar
+ * 
+ * @param {div HTML element} searchBar - div containing search bar
+ */
+function addFunctionalityToSearchBar(searchBar) {
+   const button = searchBar.querySelector('button');
+   button.addEventListener('click', (e) => {
+      e.preventDefault();
+      console.log('button clicked');
+   });
+}
+
+
+/**
+ * Generate, append, and add functionality to the search bar
+ */
+function appendSearchBar() {
+   const searchBar = generateSearchBar();
+   
+   addFunctionalityToSearchBar(searchBar);
+
+   const pageHeader = document.querySelector('div.page-header');
+   pageHeader.appendChild(searchBar);
+}
+
+
 document.addEventListener("DOMContentLoaded", () => {
    hideAllStudentListItems();
    displayPage(studentListItems);
    appendPageLinks(studentListItems);
+   appendSearchBar();
 });
